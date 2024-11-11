@@ -14,9 +14,11 @@ interface Response {
   answer: string;
 }
 
+const STORAGE_PREFIX = 'couple_space_';
+
 export async function createSession(sessionId: string, userName: string): Promise<void> {
   try {
-    const existingSession = localStorage.getItem(`session:${sessionId}`);
+    const existingSession = localStorage.getItem(`${STORAGE_PREFIX}session:${sessionId}`);
     let sessionData: Session;
 
     if (existingSession) {
@@ -32,16 +34,16 @@ export async function createSession(sessionId: string, userName: string): Promis
       };
     }
 
-    localStorage.setItem(`session:${sessionId}`, JSON.stringify(sessionData));
+    localStorage.setItem(`${STORAGE_PREFIX}session:${sessionId}`, JSON.stringify(sessionData));
   } catch (error) {
     console.error('Failed to create session:', error);
     throw error;
   }
 }
 
-export async function getSession(sessionId: string) {
+export async function getSession(sessionId: string): Promise<Session | null> {
   try {
-    const session = localStorage.getItem(`session:${sessionId}`);
+    const session = localStorage.getItem(`${STORAGE_PREFIX}session:${sessionId}`);
     return session ? JSON.parse(session) : null;
   } catch (error) {
     console.error('Failed to get session:', error);
@@ -53,16 +55,16 @@ export async function saveResponses(responses: Response[]): Promise<void> {
   try {
     if (!responses?.length) return;
     const sessionId = responses[0].sessionId;
-    localStorage.setItem(`responses:${sessionId}`, JSON.stringify(responses));
+    localStorage.setItem(`${STORAGE_PREFIX}responses:${sessionId}`, JSON.stringify(responses));
   } catch (error) {
     console.error('Failed to save responses:', error);
     throw error;
   }
 }
 
-export async function getResponses(sessionId: string) {
+export async function getResponses(sessionId: string): Promise<Response[]> {
   try {
-    const responses = localStorage.getItem(`responses:${sessionId}`);
+    const responses = localStorage.getItem(`${STORAGE_PREFIX}responses:${sessionId}`);
     return responses ? JSON.parse(responses) : [];
   } catch (error) {
     console.error('Failed to get responses:', error);
