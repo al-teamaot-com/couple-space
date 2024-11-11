@@ -1,6 +1,6 @@
 import { Handler } from '@netlify/functions';
 
-export const handler: Handler = async (event, context) => {
+export const handler: Handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -31,7 +31,7 @@ export const handler: Handler = async (event, context) => {
           };
         }
 
-        const existingSession = await context.clientContext.env.COUPLE_QUIZ.get(`session:${sessionId}`);
+        const existingSession = await process.env.COUPLE_QUIZ.get(`session:${sessionId}`);
         let sessionData;
 
         if (existingSession) {
@@ -47,11 +47,11 @@ export const handler: Handler = async (event, context) => {
           };
         }
 
-        await context.clientContext.env.COUPLE_QUIZ.put(
+        await process.env.COUPLE_QUIZ.put(
           `session:${sessionId}`,
           JSON.stringify(sessionData)
         );
-        
+
         return {
           statusCode: 200,
           headers,
@@ -69,7 +69,7 @@ export const handler: Handler = async (event, context) => {
           };
         }
 
-        const session = await context.clientContext.env.COUPLE_QUIZ.get(`session:${sessionId}`);
+        const session = await process.env.COUPLE_QUIZ.get(`session:${sessionId}`);
         return {
           statusCode: 200,
           headers,
@@ -91,7 +91,7 @@ export const handler: Handler = async (event, context) => {
           };
         }
 
-        await context.clientContext.env.COUPLE_QUIZ.put(
+        await process.env.COUPLE_QUIZ.put(
           `responses:${sessionId}`,
           JSON.stringify(responses)
         );
@@ -113,7 +113,7 @@ export const handler: Handler = async (event, context) => {
           };
         }
 
-        const responses = await context.clientContext.env.COUPLE_QUIZ.get(`responses:${sessionId}`);
+        const responses = await process.env.COUPLE_QUIZ.get(`responses:${sessionId}`);
         return {
           statusCode: 200,
           headers,
