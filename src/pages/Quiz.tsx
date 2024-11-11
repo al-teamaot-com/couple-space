@@ -27,18 +27,7 @@ export function Quiz() {
           return;
         }
 
-        const isCreator = localStorage.getItem('isCreator') === 'true';
-        console.log('Session initialization:', { sessionId, userName, isCreator });
-
-        if (isCreator) {
-          await createSession(sessionId, userName);
-          setLoading(false);
-          return;
-        }
-
         const session = await getSession(sessionId);
-        console.log('Retrieved session:', session);
-
         if (!session) {
           setError('Invalid session code. Please check and try again.');
           setLoading(false);
@@ -51,12 +40,10 @@ export function Quiz() {
           return;
         }
 
-        await createSession(sessionId, userName);
         setLoading(false);
       } catch (err) {
         console.error('Session initialization error:', err);
-        const message = err instanceof Error ? err.message : 'Failed to initialize session';
-        setError(message);
+        setError('Failed to initialize session. Please try again.');
         setLoading(false);
       }
     };
