@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Heart } from 'lucide-react';
-import { getSession } from '../lib/db';
+import { createSession, getSession } from '../lib/db';
+import { v4 as uuidv4 } from 'uuid';
 
 export function Home() {
   const navigate = useNavigate();
@@ -10,7 +11,6 @@ export function Home() {
   const [sessionCode, setSessionCode] = useState('');
   const [error, setError] = useState('');
   const [isJoining, setIsJoining] = useState(false);
-  const [debugInfo, setDebugInfo] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -22,7 +22,6 @@ export function Home() {
 
   const handleStart = async () => {
     setError('');
-    setDebugInfo('');
     setLoading(true);
 
     if (!name.trim()) {
@@ -34,60 +33,41 @@ export function Home() {
     const userName = name.trim();
     localStorage.setItem('userName', userName);
 
-    if (isJoining) {
-      const code = sessionId || sessionCode;
-      if (!code.trim()) {
-        setError('Please enter the session code');
-        setLoading(false);
-        return;
-      }
+    try {
+      if (isJoining) {
+        const code = sessionId || sessionCode;
+        if (!code.trim()) {
+          setError('Please enter the session code');
+          setLoading(false);
+          return;
+        }
 
-      try {
-        setDebugInfo('Checking session...');
         const session = await getSession(code);
-        
         if (!session) {
           setError(`Session ${code} not found. Please check the code and try again.`);
           setLoading(false);
           return;
         }
 
-        setDebugInfo(`Session found: Created by ${session.user1Name}`);
-        
         if (session.user2Name && session.user2Name !== userName && session.user1Name !== userName) {
           setError(`This session is already full. Current participants: ${session.user1Name} and ${session.user2Name}`);
           setLoading(false);
           return;
         }
 
-        if (session.user1Name === userName) {
-          setDebugInfo('Joining as session creator');
-        } else if (session.user2Name === userName) {
-          setDebugInfo('Rejoining as second participant');
-        } else {
-          setDebugInfo('Joining as new participant');
-        }
-
+        await createSession(code, userName);
         localStorage.setItem('isCreator', 'false');
         navigate(`/quiz/${code}`);
-      } catch (err) {
-        console.error('Session join error:', err);
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-        setError(`Failed to join session: ${errorMessage}`);
-        setLoading(false);
-      }
-    } else {
-      try {
-        const newSessionId = Math.random().toString(36).substring(2, 9);
-        setDebugInfo(`Creating new session with ID: ${newSessionId}`);
+      } else {
+        const newSessionId = uuidv4().substring(0, 8);
+        await createSession(newSessionId, userName);
         localStorage.setItem('isCreator', 'true');
         navigate(`/quiz/${newSessionId}`);
-      } catch (err) {
-        console.error('Session creation error:', err);
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-        setError(`Failed to create session: ${errorMessage}`);
-        setLoading(false);
       }
+    } catch (err) {
+      console.error('Session error:', err);
+      setError('Failed to create or join session. Please try again.');
+      setLoading(false);
     }
   };
 
@@ -171,12 +151,6 @@ export function Home() {
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-sm text-red-600">{error}</p>
-            </div>
-          )}
-
-          {debugInfo && (
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-600">{debugInfo}</p>
             </div>
           )}
 
