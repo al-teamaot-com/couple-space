@@ -1,11 +1,11 @@
-const API_BASE = '/.netlify/functions/api';
+const API_BASE = '/api';
 
 async function handleResponse(response: Response) {
   if (!response.ok) {
-    const error = await response.json();
+    const error = await response.json().catch(() => ({ error: 'API request failed' }));
     throw new Error(error.error || 'API request failed');
   }
-  return response.json();
+  return response;
 }
 
 export async function createSession(sessionId: string, userName: string) {
