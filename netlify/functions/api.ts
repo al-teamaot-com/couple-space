@@ -1,9 +1,6 @@
 import { Handler } from '@netlify/functions';
-import { neon } from '@neondatabase/serverless';
 
-const sql = neon(process.env.NEON_DATABASE_URL!);
-
-export const handler: Handler = async (event) => {
+export const handler: Handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -34,21 +31,31 @@ export const handler: Handler = async (event) => {
           };
         }
 
-        await sql`
-          INSERT INTO sessions (id, user1_name)
-          VALUES (${sessionId}, ${userName})
-          ON CONFLICT (id) DO UPDATE
-          SET user2_name = CASE
-            WHEN sessions.user2_name IS NULL AND sessions.user1_name != ${userName}
-            THEN ${userName}
-            ELSE sessions.user2_name
-          END
-        `;
+        const existingSession = await context.clientContext.env.COUPLE_QUIZ.get(`session:${sessionId}`);
+        let sessionData;
+
+        if (existingSession) {
+          sessionData = JSON.parse(existingSession);
+          if (!sessionData.user2Name && sessionData.user1Name !== userName) {
+            sessionData.user2Name = userName;
+          }
+        } else {
+          sessionData = {
+            id: sessionId,
+            user1Name: userName,
+            createdAt: new Date().toISOString()
+          };
+        }
+
+        await context.clientContext.env.COUPLE_QUIZ.put(
+          `session:${sessionId}`,
+          JSON.stringify(sessionData)
+        );
         
         return {
           statusCode: 200,
           headers,
-          body: JSON.stringify({ success: true })
+          body: JSON.stringify(sessionData)
         };
       }
 
@@ -62,14 +69,11 @@ export const handler: Handler = async (event) => {
           };
         }
 
-        const session = await sql`
-          SELECT * FROM sessions WHERE id = ${sessionId}
-        `;
-        
+        const session = await context.clientContext.env.COUPLE_QUIZ.get(`session:${sessionId}`);
         return {
           statusCode: 200,
           headers,
-          body: JSON.stringify(session[0] || null)
+          body: session || JSON.stringify(null)
         };
       }
     }
@@ -77,23 +81,21 @@ export const handler: Handler = async (event) => {
     // Response Management
     if (path === '/responses') {
       if (method === 'POST') {
-        const { responses } = JSON.parse(event.body || '{}');
+        const { responses, sessionId } = JSON.parse(event.body || '{}');
         
-        if (!responses?.length) {
+        if (!responses?.length || !sessionId) {
           return {
             statusCode: 400,
             headers,
-            body: JSON.stringify({ error: 'Valid responses required' })
+            body: JSON.stringify({ error: 'Valid responses and session ID required' })
           };
         }
 
-        for (const response of responses) {
-          await sql`
-            INSERT INTO responses (session_id, user_name, question_id, answer)
-            VALUES (${response.sessionId}, ${response.userName}, ${response.questionId}, ${response.answer})
-          `;
-        }
-        
+        await context.clientContext.env.COUPLE_QUIZ.put(
+          `responses:${sessionId}`,
+          JSON.stringify(responses)
+        );
+
         return {
           statusCode: 200,
           headers,
@@ -111,14 +113,11 @@ export const handler: Handler = async (event) => {
           };
         }
 
-        const responses = await sql`
-          SELECT * FROM responses WHERE session_id = ${sessionId}
-        `;
-        
+        const responses = await context.clientContext.env.COUPLE_QUIZ.get(`responses:${sessionId}`);
         return {
           statusCode: 200,
           headers,
-          body: JSON.stringify(responses)
+          body: responses || JSON.stringify([])
         };
       }
     }
