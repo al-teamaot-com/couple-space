@@ -23,6 +23,7 @@ export function Home() {
   const handleStart = async () => {
     setError('');
     setLoading(true);
+    console.log('[Home] Starting session with:', { name, isJoining, sessionId, sessionCode });
 
     if (!name.trim()) {
       setError('Please enter your name');
@@ -36,6 +37,8 @@ export function Home() {
     try {
       if (isJoining) {
         const code = sessionId || sessionCode;
+        console.log('[Home] Joining session:', code);
+
         if (!code.trim()) {
           setError('Please enter the session code');
           setLoading(false);
@@ -43,9 +46,10 @@ export function Home() {
         }
 
         const session = await getSession(code);
+        console.log('[Home] Retrieved session:', session);
+
         if (!session) {
-          const displayCode = localStorage.getItem('displaySessionId') || code.substring(0, 8);
-          setError(`Session ${displayCode} not found. Please check the code and try again.`);
+          setError(`Session ${code} not found. Please check the code and try again.`);
           setLoading(false);
           return;
         }
@@ -62,13 +66,17 @@ export function Home() {
       } else {
         const fullSessionId = uuidv4();
         const displayId = fullSessionId.substring(0, 8);
+        console.log('[Home] Creating new session:', { fullSessionId, displayId });
+        
         await createSession(fullSessionId, userName);
+        console.log('[Home] Session created successfully');
+        
         localStorage.setItem('isCreator', 'true');
         localStorage.setItem('displaySessionId', displayId);
         navigate(`/quiz/${fullSessionId}`);
       }
     } catch (err) {
-      console.error('Session error:', err);
+      console.error('[Home] Session error:', err);
       setError('Failed to create or join session. Please try again.');
       setLoading(false);
     }
