@@ -44,7 +44,8 @@ export function Home() {
 
         const session = await getSession(code);
         if (!session) {
-          setError(`Session ${code} not found. Please check the code and try again.`);
+          const displayCode = localStorage.getItem('displaySessionId') || code.substring(0, 8);
+          setError(`Session ${displayCode} not found. Please check the code and try again.`);
           setLoading(false);
           return;
         }
@@ -59,10 +60,12 @@ export function Home() {
         localStorage.setItem('isCreator', 'false');
         navigate(`/quiz/${code}`);
       } else {
-        const newSessionId = uuidv4().substring(0, 8);
-        await createSession(newSessionId, userName);
+        const fullSessionId = uuidv4();
+        const displayId = fullSessionId.substring(0, 8);
+        await createSession(fullSessionId, userName);
         localStorage.setItem('isCreator', 'true');
-        navigate(`/quiz/${newSessionId}`);
+        localStorage.setItem('displaySessionId', displayId);
+        navigate(`/quiz/${fullSessionId}`);
       }
     } catch (err) {
       console.error('Session error:', err);
