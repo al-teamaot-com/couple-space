@@ -4,10 +4,12 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      process: path.resolve(__dirname, 'src/process.ts'),
-    },
+  define: {
+    'process.env': {
+      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      VITE_DATABASE_URL: JSON.stringify(process.env.VITE_DATABASE_URL),
+      // Add other env variables you need
+    }
   },
   build: {
     commonjsOptions: {
