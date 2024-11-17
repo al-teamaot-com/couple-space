@@ -7,5 +7,11 @@ export default defineConfig({
     alias: {
       'qrcode.react': 'qrcode.react/lib/index.js'
     }
+  },
+  define: {
+    'process.env': {
+      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      DATABASE_URL: JSON.stringify(process.env.DATABASE_URL)
+    }
   }
 });
