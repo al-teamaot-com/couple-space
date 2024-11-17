@@ -9,9 +9,6 @@ export default defineConfig({
     }
   },
   define: {
-    'process.env': {
-      NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'production'),
-      DATABASE_URL: JSON.stringify(process.env.DATABASE_URL || ''),
-    }
+    'process.env': JSON.stringify(process.env)
   }
 });
