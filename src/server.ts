@@ -7,13 +7,30 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(express.static('dist'));
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// Enable CORS for development
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
 // Database connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
+  }
+});
+
+// Test database connection
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('Database connection error:', err);
+  } else {
+    console.log('Database connected:', res.rows[0]);
   }
 });
 
@@ -30,6 +47,7 @@ app.post('/api/quiz-sessions', async (req, res) => {
       'INSERT INTO quiz_sessions (user1_answers) VALUES ($1) RETURNING id',
       [JSON.stringify(user1_answers)]
     );
+    console.log('Created session:', result.rows[0]);
     res.json({ id: result.rows[0].id });
   } catch (error) {
     console.error('Error creating quiz session:', error);
@@ -61,8 +79,11 @@ app.get('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log('Static files served from:', path.join(__dirname, '../dist'));
+  console.log('Database URL:', process.env.DATABASE_URL ? 'Set' : 'Not set');
 });
 
 module.exports = app;
