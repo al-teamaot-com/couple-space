@@ -4,6 +4,13 @@ import { Heart } from 'lucide-react';
 import { createSession, getSession } from '../lib/db';
 import { v4 as uuidv4 } from 'uuid';
 
-export function Home() {
-  // ... rest of your component code ...
-}
+const Home = () => {
+  // Your component logic here
+  return (
+    <div>
+      {/* Your component JSX here */}
+    </div>
+  );
+};
+
+export default Home;
