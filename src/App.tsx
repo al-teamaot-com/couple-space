@@ -2,7 +2,16 @@ import * as React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
-import Quiz from './pages/Quiz'
+
+// Debug component for Quiz route
+const DebugQuiz = () => {
+  console.log('Debug Quiz rendering');
+  return (
+    <div className="p-4">
+      <h1>Quiz Page</h1>
+    </div>
+  );
+};
 
 const App = () => {
   console.log('App component rendering...');
@@ -13,8 +22,12 @@ const App = () => {
         <div className="min-h-screen bg-gray-100">
           <Navbar />
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/" element={
+              <div className="p-4">
+                <Home />
+              </div>
+            } />
+            <Route path="/quiz" element={<DebugQuiz />} />
           </Routes>
         </div>
       </BrowserRouter>
