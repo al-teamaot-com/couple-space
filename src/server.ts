@@ -1,7 +1,7 @@
-import express, { Request, Response, NextFunction } from 'express';
-import { Pool, QueryResult } from 'pg';
-import path from 'path';
-import dotenv from 'dotenv';
+const express = require('express');
+const { Pool } = require('pg');
+const path = require('path');
+const dotenv = require('dotenv');
 
 // Initialize dotenv
 dotenv.config();
@@ -16,18 +16,12 @@ interface QuizSession {
   created_at: Date;
 }
 
-interface QuizRequest extends Request {
-  body: {
-    user1_answers?: string[];
-  }
-}
-
 // Middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../dist')));
+app.use(express.static('dist'));
 
 // Enable CORS for development
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: any, res: any, next: any) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -43,7 +37,7 @@ const pool = new Pool({
 });
 
 // Test database connection
-pool.query('SELECT NOW()', (err: Error | null, res: QueryResult<any>) => {
+pool.query('SELECT NOW()', (err: Error | null, res: any) => {
   if (err) {
     console.error('Database connection error:', err);
   } else {
@@ -52,19 +46,19 @@ pool.query('SELECT NOW()', (err: Error | null, res: QueryResult<any>) => {
 });
 
 // Health check endpoint
-app.get('/api/health', (_req: Request, res: Response) => {
+app.get('/api/health', (_req: any, res: any) => {
   res.json({ status: 'ok' });
 });
 
 // Create quiz session
-app.post('/api/quiz-sessions', async (req: QuizRequest, res: Response) => {
+app.post('/api/quiz-sessions', async (req: any, res: any) => {
   try {
     const { user1_answers } = req.body;
     if (!user1_answers) {
       return res.status(400).json({ error: 'user1_answers is required' });
     }
     
-    const result = await pool.query<QuizSession>(
+    const result = await pool.query(
       'INSERT INTO quiz_sessions (user1_answers) VALUES ($1) RETURNING id',
       [JSON.stringify(user1_answers)]
     );
@@ -77,10 +71,10 @@ app.post('/api/quiz-sessions', async (req: QuizRequest, res: Response) => {
 });
 
 // Get quiz session
-app.get('/api/quiz-sessions/:id', async (req: Request, res: Response) => {
+app.get('/api/quiz-sessions/:id', async (req: any, res: any) => {
   try {
     const { id } = req.params;
-    const result = await pool.query<QuizSession>(
+    const result = await pool.query(
       'SELECT * FROM quiz_sessions WHERE id = $1',
       [id]
     );
@@ -95,7 +89,7 @@ app.get('/api/quiz-sessions/:id', async (req: Request, res: Response) => {
 });
 
 // Catch all routes
-app.get('*', (_req: Request, res: Response) => {
+app.get('*', (_req: any, res: any) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
@@ -107,4 +101,4 @@ app.listen(PORT, () => {
   console.log('Database URL:', process.env.DATABASE_URL ? 'Set' : 'Not set');
 });
 
-export default app;
+module.exports = app;
