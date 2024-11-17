@@ -1,23 +1,13 @@
-import express from 'express';
-import { Pool } from 'pg';
-import path from 'path';
-import dotenv from 'dotenv';
-
-dotenv.config();
+const express = require('express');
+const { Pool } = require('pg');
+const path = require('path');
+require('dotenv').config();
 
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.static('dist'));
-
-// Enable CORS for development
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
 
 // Database connection
 const pool = new Pool({
@@ -34,14 +24,12 @@ app.get('/api/health', (req, res) => {
 
 // Create quiz session
 app.post('/api/quiz-sessions', async (req, res) => {
-  console.log('Received request to create quiz session:', req.body);
   try {
     const { user1_answers } = req.body;
     const result = await pool.query(
       'INSERT INTO quiz_sessions (user1_answers) VALUES ($1) RETURNING id',
       [JSON.stringify(user1_answers)]
     );
-    console.log('Created quiz session:', result.rows[0]);
     res.json({ id: result.rows[0].id });
   } catch (error) {
     console.error('Error creating quiz session:', error);
@@ -51,7 +39,6 @@ app.post('/api/quiz-sessions', async (req, res) => {
 
 // Get quiz session
 app.get('/api/quiz-sessions/:id', async (req, res) => {
-  console.log('Fetching quiz session:', req.params.id);
   try {
     const { id } = req.params;
     const result = await pool.query(
@@ -76,7 +63,6 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log('Database URL:', process.env.DATABASE_URL ? 'Set' : 'Not set');
 });
 
-export default app;
+module.exports = app;
