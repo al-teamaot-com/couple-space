@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc src/server.ts --outDir dist",
+    "build": "vite build && tsc src/server.ts --outDir dist --esModuleInterop true",
     "start": "node dist/server.js",
     "preview": "vite preview"
   },
