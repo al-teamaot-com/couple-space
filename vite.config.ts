@@ -9,6 +9,13 @@ export default defineConfig({
     }
   },
   define: {
-    'process.env': JSON.stringify(process.env)
+    'process': {
+      'env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'production'),
+        DATABASE_URL: JSON.stringify(process.env.DATABASE_URL || ''),
+        PORT: JSON.stringify(process.env.PORT || 3000),
+        // Add any other environment variables your client code needs
+      }
+    }
   }
 });
