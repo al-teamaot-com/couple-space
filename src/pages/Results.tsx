@@ -16,6 +16,12 @@ export function Results() {
   const shareUrl = `${baseUrl}/join/${sessionId}`;
   const qrRef = useRef<HTMLDivElement>(null)
 
+  // Get the current URL
+  const currentUrl = window.location.href;
+  
+  // Create Google Charts QR Code URL
+  const qrCodeUrl = `https://chart.googleapis.com/chart?cht=qr&chs=256x256&chl=${encodeURIComponent(currentUrl)}`;
+
   useEffect(() => {
     if (qrRef.current) {
       new window.QRCode(qrRef.current, {
@@ -78,7 +84,12 @@ export function Results() {
           </div>
 
           <div className="mt-8 text-center">
-            <div ref={qrRef}></div>
+            <img 
+              src={qrCodeUrl} 
+              alt="QR Code" 
+              width="256" 
+              height="256"
+            />
           </div>
 
           <div className="bg-blue-50 p-4 rounded-lg text-left">
