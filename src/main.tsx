@@ -1,13 +1,15 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
-import App from './App.tsx'
 import './index.css'
-import ErrorBoundary from './components/ErrorBoundary.tsx'
+
+const TestComponent = () => (
+  <div style={{ padding: '20px' }}>
+    <h1>Test Page</h1>
+  </div>
+)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
+    <TestComponent />
   </React.StrictMode>,
 )
