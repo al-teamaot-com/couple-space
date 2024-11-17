@@ -9,23 +9,48 @@ const Quiz: React.FC = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
 
-  const handleAnswer = (answerValue: number) => {
-    // Save the answer
+  const handleAnswer = async (answerValue: number) => {
     const newAnswers = [...answers];
     newAnswers[currentQuestionIndex] = answerValue;
     setAnswers(newAnswers);
 
-    // Move to next question or finish
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
     } else {
-      // Navigate to results with answers in state
-      navigate('/results', { 
-        state: { 
-          answers: newAnswers,
-          completed: true
+      try {
+        // Save answers to database
+        const response = await fetch('/api/sessions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ answers: newAnswers }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to save answers');
         }
-      });
+
+        const data = await response.json();
+        
+        // Navigate to results with both answers and session ID
+        navigate('/results', { 
+          state: { 
+            answers: newAnswers,
+            completed: true,
+            sessionId: data.id
+          }
+        });
+      } catch (error) {
+        console.error('Failed to save quiz results:', error);
+        // Still navigate to results even if save fails
+        navigate('/results', { 
+          state: { 
+            answers: newAnswers,
+            completed: true
+          }
+        });
+      }
     }
   };
 
