@@ -7,11 +7,13 @@ interface Props {
 }
 
 const QuestionCard: React.FC<Props> = ({ question, onNext }) => {
+  const options = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
+
   return (
     <div className="bg-white shadow-lg rounded-lg p-6">
       <h2 className="text-xl font-semibold mb-4">{question.text}</h2>
       <div className="space-y-4">
-        {question.options.map((option, index) => (
+        {options.map((option, index) => (
           <button
             key={index}
             onClick={onNext}
@@ -20,6 +22,9 @@ const QuestionCard: React.FC<Props> = ({ question, onNext }) => {
             {option}
           </button>
         ))}
+      </div>
+      <div className="mt-4 text-sm text-gray-500">
+        Category: {question.category} • Intensity: {question.intensity}
       </div>
     </div>
   );
