@@ -11,10 +11,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from the dist directory
 app.use(express.static(join(__dirname, 'dist')));
 
-// Handle all routes by serving index.html
 app.get('*', (req, res) => {
   res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
