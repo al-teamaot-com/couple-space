@@ -1,17 +1,5 @@
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-
-const questions = [
-  {
-    id: 1,
-    text: "What is your partner's favorite color?",
-  },
-  {
-    id: 2,
-    text: "When is your anniversary date?",
-  },
-  // Add more questions as needed
-]
+import { useState, useEffect } from 'react'
 
 const QuizQuestions = () => {
   const { id } = useParams()
@@ -19,6 +7,16 @@ const QuizQuestions = () => {
   const navigate = useNavigate()
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<string[]>([])
+  const [questions, setQuestions] = useState([])
+
+  useEffect(() => {
+    fetch('http://localhost:3001/api/questions')
+      .then(response => response.json())
+      .then(data => {
+        setQuestions(data)
+      })
+      .catch(error => console.error('Error:', error))
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,7 +33,7 @@ const QuizQuestions = () => {
       
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6">
         <div className="space-y-4">
-          <p className="text-lg mb-4">{questions[currentQuestion].text}</p>
+          <p className="text-lg mb-4">{questions[currentQuestion]?.text}</p>
           
           <input 
             type="text"
