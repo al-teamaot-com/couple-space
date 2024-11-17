@@ -1,11 +1,13 @@
 import * as React from 'react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import QuestionCard from '../components/QuestionCard'
 import { questions } from '../data/questions'
 
 const Quiz: React.FC = () => {
-  console.log('Quiz component rendering with questions:', questions);
+  const navigate = useNavigate();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<number[]>([]);
 
   if (!questions || questions.length === 0) {
     return (
@@ -16,12 +18,23 @@ const Quiz: React.FC = () => {
     );
   }
 
-  const handleNext = () => {
+  const handleAnswer = (answerValue: number) => {
+    // Save the answer
+    const newAnswers = [...answers];
+    newAnswers[currentQuestionIndex] = answerValue;
+    setAnswers(newAnswers);
+
+    // Move to next question or finish
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
     } else {
-      // Handle quiz completion
-      console.log('Quiz completed!');
+      // Navigate to results with answers
+      navigate('/results', { 
+        state: { 
+          answers: newAnswers,
+          completed: true
+        }
+      });
     }
   };
 
@@ -35,7 +48,8 @@ const Quiz: React.FC = () => {
         
         <QuestionCard 
           question={questions[currentQuestionIndex]}
-          onNext={handleNext}
+          onAnswer={handleAnswer}
+          selectedAnswer={answers[currentQuestionIndex]}
         />
       </div>
     </div>
