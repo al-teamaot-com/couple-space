@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Share, Copy, Check, Link as LinkIcon } from 'lucide-react';
-import { QRCodeSVG } from '/node_modules/qrcode.react'
+import QRCode from 'qrcode'
 
 export function Results() {
   const { sessionId } = useParams();
@@ -9,6 +9,20 @@ export function Results() {
   const shareCode = sessionId;
   const baseUrl = 'https://couplespace.netlify.app';
   const shareUrl = `${baseUrl}/join/${sessionId}`;
+  const qrRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    if (qrRef.current) {
+      QRCode.toCanvas(qrRef.current, window.location.href, {
+        width: 256,
+        margin: 1,
+        color: {
+          dark: '#000000',
+          light: '#ffffff'
+        }
+      })
+    }
+  }, [])
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -60,11 +74,7 @@ export function Results() {
           </div>
 
           <div className="mt-8 text-center">
-            <QRCodeSVG 
-              value={shareUrl} 
-              size={256}
-              level="H"
-            />
+            <canvas ref={qrRef} />
           </div>
 
           <div className="bg-blue-50 p-4 rounded-lg text-left">
