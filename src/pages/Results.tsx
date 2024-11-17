@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Share, Copy, Check, Link as LinkIcon } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeSVG } from '/node_modules/qrcode.react'
 
 export function Results() {
   const { sessionId } = useParams();
