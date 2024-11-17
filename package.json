@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "push-github": "node scripts/push-to-github.js",
-    "start": "node server.js"
+    "start": "vite preview --host"
   },
   "dependencies": {
     "@octokit/rest": "^20.1.1",
