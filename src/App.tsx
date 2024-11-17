@@ -3,10 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 
-// Wrap Quiz in error boundary
+// Wrap components in error boundaries
 const QuizWithError = () => {
   try {
-    // Dynamically import Quiz
     const Quiz = React.lazy(() => import('./pages/Quiz'));
     return (
       <React.Suspense fallback={<div className="p-4">Loading quiz...</div>}>
@@ -24,6 +23,25 @@ const QuizWithError = () => {
   }
 };
 
+const ResultsWithError = () => {
+  try {
+    const Results = React.lazy(() => import('./pages/Results'));
+    return (
+      <React.Suspense fallback={<div className="p-4">Loading results...</div>}>
+        <Results />
+      </React.Suspense>
+    );
+  } catch (error) {
+    console.error('Results error:', error);
+    return (
+      <div className="p-4 bg-red-100">
+        <h1>Error loading results</h1>
+        <pre>{error?.message}</pre>
+      </div>
+    );
+  }
+};
+
 const App = () => {
   console.log('App component rendering...');
 
@@ -34,6 +52,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/quiz" element={<QuizWithError />} />
+          <Route path="/results" element={<ResultsWithError />} />
         </Routes>
       </div>
     </BrowserRouter>

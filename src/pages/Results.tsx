@@ -1,114 +1,52 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import { Share, Copy, Check, Link as LinkIcon } from 'lucide-react';
+import * as React from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { questions } from '../data/questions'
 
-declare global {
-  interface Window {
-    QRCode: any;
-  }
-}
+const Results: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const answers = location.state?.answers || [];
+  const completed = location.state?.completed;
 
-export function Results() {
-  const { sessionId } = useParams();
-  const [copied, setCopied] = useState(false);
-  const shareCode = sessionId;
-  const baseUrl = 'https://couplespace.netlify.app';
-  const shareUrl = `${baseUrl}/join/${sessionId}`;
-  const qrRef = useRef<HTMLDivElement>(null)
-
-  // Get the current URL
-  const currentUrl = window.location.href;
-  
-  // Create Google Charts QR Code URL
-  const qrCodeUrl = `https://chart.googleapis.com/chart?cht=qr&chs=256x256&chl=${encodeURIComponent(currentUrl)}`;
-
-  useEffect(() => {
-    if (qrRef.current) {
-      new window.QRCode(qrRef.current, {
-        text: window.location.href,
-        width: 256,
-        height: 256,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-      });
+  // Redirect if accessed directly without completing quiz
+  React.useEffect(() => {
+    if (!completed) {
+      navigate('/');
     }
-  }, [])
+  }, [completed, navigate]);
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  if (!completed) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-center">Results</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Your Results</h1>
         
-        <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-          <h2 className="text-2xl font-bold mb-4">Share with your partner</h2>
-          <p className="text-gray-600 mb-6">
-            Share this code or link with your partner to join your quiz.
-          </p>
-          
-          <div className="max-w-sm mx-auto mb-6">
-            <div className="flex items-center justify-between gap-4 p-4 bg-gray-50 rounded-lg mb-4">
-              <code className="text-lg font-mono font-semibold text-rose-600">
-                {shareCode}
-              </code>
-              <button
-                onClick={() => copyToClipboard(shareCode)}
-                className="p-2 text-gray-600 hover:text-rose-600 transition-colors"
-                title="Copy code"
-              >
-                {copied ? (
-                  <Check className="h-5 w-5 text-green-500" />
-                ) : (
-                  <Copy className="h-5 w-5" />
-                )}
-              </button>
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">Your Answers</h2>
+          {questions.map((question, index) => (
+            <div key={question.id} className="mb-4 p-4 border-b">
+              <p className="font-medium">{question.text}</p>
+              <p className="text-gray-600">
+                Your answer: {answers[index] || 'Not answered'}
+              </p>
             </div>
+          ))}
+        </div>
 
-            <div className="flex items-center justify-between gap-4 p-4 bg-gray-50 rounded-lg">
-              <div className="truncate text-sm text-gray-600">
-                {shareUrl}
-              </div>
-              <button
-                onClick={() => copyToClipboard(shareUrl)}
-                className="p-2 text-gray-600 hover:text-rose-600 transition-colors flex-shrink-0"
-                title="Copy link"
-              >
-                <LinkIcon className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-
-          <div className="mt-8 text-center">
-            <img 
-              src={qrCodeUrl} 
-              alt="QR Code" 
-              width="256" 
-              height="256"
-            />
-          </div>
-
-          <div className="bg-blue-50 p-4 rounded-lg text-left">
-            <h3 className="font-semibold text-blue-800 mb-2">Instructions for your partner:</h3>
-            <ol className="list-decimal list-inside text-blue-700 space-y-2">
-              <li>Click the shared link or scan the QR code</li>
-              <li>Enter their name</li>
-              <li>Answer the questions</li>
-            </ol>
-          </div>
-
-          <p className="mt-6 text-sm text-gray-500">
-            Your answers have been saved. Once your partner completes the quiz,
-            you'll both be able to see how your answers compare.
-          </p>
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => navigate('/')}
+            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+          >
+            Back to Home
+          </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Results;
