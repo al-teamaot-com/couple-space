@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { supabase } from './db-client';
 
 interface Session {
   id: string;
@@ -19,31 +19,37 @@ const STORAGE_PREFIX = 'couple_space_';
 export async function createSession(sessionId: string, userName: string): Promise<void> {
   try {
     console.log('[DB] Creating session:', { sessionId, userName });
-    const storageKey = `${STORAGE_PREFIX}session:${sessionId}`;
-    console.log('[DB] Storage key:', storageKey);
     
-    const existingSession = localStorage.getItem(storageKey);
+    // First check if session exists
+    const { data: existingSession } = await supabase
+      .from('Session')
+      .select('*')
+      .eq('id', sessionId)
+      .single();
+    
     console.log('[DB] Existing session:', existingSession);
-    
-    let sessionData: Session;
+
     if (existingSession) {
-      sessionData = JSON.parse(existingSession);
-      console.log('[DB] Found existing session:', sessionData);
-      if (!sessionData.user2Name && sessionData.user1Name !== userName) {
-        sessionData.user2Name = userName;
-        console.log('[DB] Updated session with user2:', sessionData);
+      // Update existing session with user2
+      if (!existingSession.user2_name && existingSession.user1_name !== userName) {
+        const { error } = await supabase
+          .from('Session')
+          .update({ user2_name: userName })
+          .eq('id', sessionId);
+          
+        if (error) throw error;
       }
     } else {
-      sessionData = {
-        id: sessionId,
-        user1Name: userName,
-        createdAt: new Date().toISOString()
-      };
-      console.log('[DB] Created new session data:', sessionData);
+      // Create new session
+      const { error } = await supabase
+        .from('Session')
+        .insert([{
+          id: sessionId,
+          user1_name: userName
+        }]);
+        
+      if (error) throw error;
     }
-
-    localStorage.setItem(storageKey, JSON.stringify(sessionData));
-    console.log('[DB] Session saved successfully');
   } catch (error) {
     console.error('[DB] Failed to create session:', error);
     throw error;
@@ -53,19 +59,25 @@ export async function createSession(sessionId: string, userName: string): Promis
 export async function getSession(sessionId: string): Promise<Session | null> {
   try {
     console.log('[DB] Getting session:', { sessionId });
-    const storageKey = `${STORAGE_PREFIX}session:${sessionId}`;
-    console.log('[DB] Storage key:', storageKey);
     
-    const session = localStorage.getItem(storageKey);
-    console.log('[DB] Raw session from storage:', session);
+    const { data, error } = await supabase
+      .from('sessions')
+      .select('*')
+      .eq('id', sessionId)
+      .single();
+      
+    if (error) throw error;
     
-    if (session) {
-      const parsedSession = JSON.parse(session);
-      console.log('[DB] Parsed session:', parsedSession);
-      return parsedSession;
+    if (data) {
+      // Convert from database format to Session type
+      return {
+        id: data.id,
+        user1Name: data.user1_name,
+        user2Name: data.user2_name,
+        createdAt: data.created_at
+      };
     }
     
-    console.log('[DB] No session found');
     return null;
   } catch (error) {
     console.error('[DB] Failed to get session:', error);
