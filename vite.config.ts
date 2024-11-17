@@ -4,16 +4,19 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  define: {
-    'process.env': {
-      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-      VITE_DATABASE_URL: JSON.stringify(process.env.VITE_DATABASE_URL),
-      // Add other env variables you need
-    }
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
   },
   build: {
-    commonjsOptions: {
-      transformMixedEsModules: true,
-    },
+    rollupOptions: {
+      external: ['qrcode.react'],
+      output: {
+        globals: {
+          'qrcode.react': 'QRCode'
+        }
+      }
+    }
   }
 });

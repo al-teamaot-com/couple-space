@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Share, Copy, Check, Link as LinkIcon } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+import QRCodeReact from 'qrcode.react';
 
 export function Results() {
   const { sessionId } = useParams();
@@ -58,7 +58,7 @@ export function Results() {
 
         <div className="mb-8">
           <div className="bg-white p-4 rounded-lg inline-block">
-            <QRCodeSVG
+            <QRCodeReact
               value={shareUrl}
               size={160}
               level="H"
