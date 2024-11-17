@@ -1,21 +1,13 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      'qrcode.react': 'qrcode.react/lib/index.js'
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  return {
+    plugins: [react()],
+    define: {
+      'process.env.DATABASE_URL': JSON.stringify(env.DATABASE_URL || ''),
+      'process.env.NODE_ENV': JSON.stringify(mode)
     }
-  },
-  define: {
-    'process': {
-      'env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'production'),
-        DATABASE_URL: JSON.stringify(process.env.DATABASE_URL || ''),
-        PORT: JSON.stringify(process.env.PORT || 3000),
-        // Add any other environment variables your client code needs
-      }
-    }
-  }
+  };
 });
