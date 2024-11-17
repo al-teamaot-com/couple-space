@@ -22,7 +22,8 @@
     "noFallthroughCasesInSwitch": true,
     
     /* Output */
-    "outDir": "dist"
+    "outDir": "dist",
+    "types": ["node"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
