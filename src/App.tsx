@@ -1,14 +1,23 @@
 import * as React from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Navbar from './components/Navbar'
+
+// Import pages one by one
+import Home from './pages/Home'
 
 const App = () => {
-  console.log('App component rendering...');
+  console.log('App component rendering with router...');
 
   try {
     return (
-      <div className="min-h-screen bg-gray-100">
-        <h1 className="text-2xl p-4">Couple Space</h1>
-      </div>
+      <BrowserRouter>
+        <div className="min-h-screen bg-gray-100">
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
     );
   } catch (error) {
     console.error('Error in App render:', error);
