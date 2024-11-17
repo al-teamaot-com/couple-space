@@ -71,3 +71,19 @@ export async function getSession(sessionId: string): Promise<Session | null> {
     throw error;
   }
 }
+
+export async function saveResponses(sessionId: string, responses: UserResponse[]): Promise<void> {
+  try {
+    console.log('[DB] Saving responses:', { sessionId, responses });
+    
+    await pool.query(
+      'INSERT INTO "Response" (session_id, question_id, answer) ' +
+      'VALUES ' + 
+      responses.map((_, i) => `($1, $${i*2 + 2}, $${i*2 + 3})`).join(', '),
+      [sessionId, ...responses.flatMap(r => [r.questionId, r.answer])]
+    );
+  } catch (error) {
+    console.error('[DB] Failed to save responses:', error);
+    throw error;
+  }
+}
