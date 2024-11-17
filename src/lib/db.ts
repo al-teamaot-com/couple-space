@@ -1,4 +1,12 @@
-import { pool } from './db-client';
+import { Pool } from 'pg';
+
+// Create the database pool
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 interface Session {
   id: string;
