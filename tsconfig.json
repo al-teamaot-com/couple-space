@@ -1,28 +1,22 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "CommonJS",
-<<<<<<< HEAD
-    "esModuleInterop": true,
-    "strict": true,
-    "outDir": "./dist",
-    "rootDir": ".",
-    "typeRoots": ["./node_modules/@types"]
-  },
-  "include": ["server.ts"],
-  "exclude": ["node_modules"]
-=======
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
     "skipLibCheck": true,
-    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": false,
-    "outDir": "dist"
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true
   },
-  "include": ["src"]
->>>>>>> ef672681f4d84521cb047f6bfc47832cc9da5d67
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
