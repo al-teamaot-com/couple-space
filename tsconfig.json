@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "CommonJS",
+<<<<<<< HEAD
     "esModuleInterop": true,
     "strict": true,
     "outDir": "./dist",
@@ -10,4 +11,18 @@
   },
   "include": ["server.ts"],
   "exclude": ["node_modules"]
+=======
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": false,
+    "outDir": "dist"
+  },
+  "include": ["src"]
+>>>>>>> ef672681f4d84521cb047f6bfc47832cc9da5d67
 }

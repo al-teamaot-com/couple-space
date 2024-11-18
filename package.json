@@ -4,9 +4,17 @@
   "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
+<<<<<<< HEAD
     "start": "ts-node server.ts",
     "dev": "nodemon --exec ts-node server.ts",
     "build": "tsc"
+=======
+    "start": "node dist/server.js",
+    "build": "vite build && tsc src/server.ts --outDir dist --esModuleInterop true",
+    "postinstall": "npm run build",
+    "dev": "vite",
+    "preview": "vite preview"
+>>>>>>> ef672681f4d84521cb047f6bfc47832cc9da5d67
   },
   "dependencies": {
     "@types/express": "4.17.21",
