@@ -1,0 +1,51 @@
+[1mdiff --git a/src/lib/db.ts b/src/lib/db.ts[m
+[1mindex 38b1d39..90fc4f8 100644[m
+[1m--- a/src/lib/db.ts[m
+[1m+++ b/src/lib/db.ts[m
+[36m@@ -18,13 +18,17 @@[m [mconst STORAGE_PREFIX = 'couple_space_';[m
+ [m
+ export async function createSession(sessionId: string, userName: string): Promise<void> {[m
+   try {[m
+[32m+[m[32m    console.log('[DB] Creating/updating session:', { sessionId, userName });[m
+     const existingSession = localStorage.getItem(`${STORAGE_PREFIX}session:${sessionId}`);[m
+[32m+[m[32m    console.log('[DB] Existing session:', existingSession);[m
+[32m+[m[41m    [m
+     let sessionData: Session;[m
+[31m-[m
+     if (existingSession) {[m
+       sessionData = JSON.parse(existingSession);[m
+[32m+[m[32m      console.log('[DB] Found existing session:', sessionData);[m
+       if (!sessionData.user2Name && sessionData.user1Name !== userName) {[m
+         sessionData.user2Name = userName;[m
+[32m+[m[32m        console.log('[DB] Added user2 to session:', sessionData);[m
+       }[m
+     } else {[m
+       sessionData = {[m
+[36m@@ -32,21 +36,25 @@[m [mexport async function createSession(sessionId: string, userName: string): Promis[m
+         user1Name: userName,[m
+         createdAt: new Date().toISOString()[m
+       };[m
+[32m+[m[32m      console.log('[DB] Created new session:', sessionData);[m
+     }[m
+ [m
+     localStorage.setItem(`${STORAGE_PREFIX}session:${sessionId}`, JSON.stringify(sessionData));[m
+[32m+[m[32m    console.log('[DB] Session saved successfully');[m
+   } catch (error) {[m
+[31m-    console.error('Failed to create session:', error);[m
+[32m+[m[32m    console.error('[DB] Failed to create session:', error);[m
+     throw error;[m
+   }[m
+ }[m
+ [m
+ export async function getSession(sessionId: string): Promise<Session | null> {[m
+   try {[m
+[32m+[m[32m    console.log('[DB] Getting session:', sessionId);[m
+     const session = localStorage.getItem(`${STORAGE_PREFIX}session:${sessionId}`);[m
+[32m+[m[32m    console.log('[DB] Retrieved session:', session);[m
+     return session ? JSON.parse(session) : null;[m
+   } catch (error) {[m
+[31m-    console.error('Failed to get session:', error);[m
+[32m+[m[32m    console.error('[DB] Failed to get session:', error);[m
+     throw error;[m
+   }[m
+ }[m
