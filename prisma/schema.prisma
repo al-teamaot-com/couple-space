@@ -7,24 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Session {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  questions Question[]
+model Categories {
+  id          Int                    @id @default(autoincrement())
+  name        String
+  description String
+  created_at  DateTime               @default(now())
+  questions   RelationshipQuestions[]
 }
 
-model Question {
-  id        String   @id @default(uuid())
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  session   Session  @relation(fields: [sessionId], references: [id])
-  sessionId String
-}
-
-model QuizSession {
-  id           Int      @id @default(autoincrement())
-  user1_answers Json
-  createdAt    DateTime @default(now())
+model RelationshipQuestions {
+  id          Int        @id @default(autoincrement())
+  content     String
+  type        String
+  created_at  DateTime   @default(now())
+  category_id Int
+  category    Categories @relation(fields: [category_id], references: [id])
 }
