@@ -1,6 +1,5 @@
 export interface Activity {
     id: number;
-    name: string;
     title: string;
     description: string;
     category: string;
@@ -24,7 +23,7 @@ export interface Question {
 
 export interface QuestionFormProps {
     question: Question;
-    onNext: (value: number) => void;
+    onNext: (answer: string) => void;
     userName?: string;
     totalQuestions: number;
 }

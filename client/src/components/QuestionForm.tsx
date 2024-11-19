@@ -1,5 +1,5 @@
 import React from 'react';
-import { Question, QuestionFormProps } from '@/types';
+import { QuestionFormProps } from '@/types';
 
 const QuestionForm: React.FC<QuestionFormProps> = ({ 
     question, 
@@ -8,7 +8,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
     totalQuestions
 }) => {
     const handleAnswer = (value: number) => {
-        onNext(value);
+        onNext(value.toString());
     };
 
     return (
@@ -20,7 +20,6 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
             
             <div className="question-card">
                 <h3 className="text-xl mb-4">{question.text}</h3>
-                {/* Add your answer buttons here */}
                 <div className="flex gap-4 justify-center">
                     {[1, 2, 3, 4, 5].map((value) => (
                         <button
