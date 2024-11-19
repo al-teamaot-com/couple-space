@@ -1,58 +1,40 @@
-import React, { useState } from 'react';
-import { Question } from '@/types';
-import QuestionCard from './QuestionCard';
+import React from 'react';
+import { Question, QuestionFormProps } from '@/types';
 
-interface QuestionFormProps {
-  question: Question;
-  onNext: (answer: string) => void;
-  userName?: string;
-  totalQuestions: number;
-  onComplete?: (answers: { [key: number]: string }) => void;
-}
+const QuestionForm: React.FC<QuestionFormProps> = ({ 
+    question, 
+    onNext,
+    userName = "User",
+    totalQuestions
+}) => {
+    const handleAnswer = (value: number) => {
+        onNext(value);
+    };
 
-export default function QuestionForm({ 
-  question, 
-  onNext,
-  userName = "User",
-  totalQuestions,
-  onComplete 
-}: QuestionFormProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<{ [key: number]: string }>({});
-  
-  const handleAnswer = (answer: string) => {
-    setAnswers(prev => ({
-      ...prev,
-      [question.id]: answer
-    }));
-    
-    if (currentIndex < totalQuestions - 1) {
-      setCurrentIndex(prev => prev + 1);
-    } else if (onComplete) {
-      onComplete(answers);
-    }
-  };
-
-  return (
-    <div className="max-w-2xl mx-auto px-4">
-      <div className="mb-8 text-center">
-        <h2 className="text-2xl font-semibold">Welcome, {userName}!</h2>
-        <p className="text-gray-600">Question {currentIndex + 1} of {totalQuestions}</p>
-      </div>
-      
-      <QuestionCard
-        question={question}
-        onAnswer={handleAnswer}
-      />
-      
-      <div className="mt-8">
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div
-            className="bg-rose-500 h-2 rounded-full transition-all"
-            style={{ width: `${((currentIndex + 1) / totalQuestions) * 100}%` }}
-          />
+    return (
+        <div className="max-w-2xl mx-auto px-4">
+            <div className="mb-8 text-center">
+                <h2 className="text-2xl font-semibold">Welcome, {userName}!</h2>
+                <p className="text-gray-600">Question {question.id} of {totalQuestions}</p>
+            </div>
+            
+            <div className="question-card">
+                <h3 className="text-xl mb-4">{question.text}</h3>
+                {/* Add your answer buttons here */}
+                <div className="flex gap-4 justify-center">
+                    {[1, 2, 3, 4, 5].map((value) => (
+                        <button
+                            key={value}
+                            onClick={() => handleAnswer(value)}
+                            className="px-4 py-2 bg-blue-500 text-white rounded"
+                        >
+                            {value}
+                        </button>
+                    ))}
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
-}
+    );
+};
+
+export default QuestionForm;
