@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
-import { Question, Props } from '@/types';
+import { Question, QuestionFormProps } from '@/types';
 import QuestionCard from './QuestionCard';
 
-interface QuestionFormProps {
-  questions: Question[];
-  onComplete: (answers: { [key: number]: string }) => void;
-  userName: string;
-}
-
-export default function QuestionForm({ questions, onComplete, userName }: QuestionFormProps) {
+export default function QuestionForm({ question, onNext }: QuestionFormProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [key: number]: string }>({});
   
   const handleAnswer = (answer: string) => {
     setAnswers(prev => ({
       ...prev,
-      [questions[currentIndex].id]: answer
+      [question.id]: answer
     }));
     
     if (currentIndex < questions.length - 1) {
@@ -33,7 +27,7 @@ export default function QuestionForm({ questions, onComplete, userName }: Questi
       </div>
       
       <QuestionCard
-        question={questions[currentIndex]}
+        question={question}
         onNext={handleAnswer}
       />
       

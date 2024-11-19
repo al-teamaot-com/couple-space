@@ -23,7 +23,7 @@ export interface Activity {
     duration: string;
 }
 
-export interface Props {
+export interface QuestionFormProps {
     question: Question;
     onNext: (answer: string) => void;
 }
