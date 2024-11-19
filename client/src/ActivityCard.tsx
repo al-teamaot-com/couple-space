@@ -1,27 +1,24 @@
 import React from 'react';
 import { Activity } from '@/types';
-import { Clock } from 'lucide-react';
 
 interface ActivityCardProps {
-  activity: Activity;
+    activity: Activity;
 }
 
-export default function ActivityCard({ activity }: ActivityCardProps) {
-  return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
-      <h3 className="font-semibold text-lg mb-2">{activity.title}</h3>
-      <p className="text-gray-600 text-sm mb-4">{activity.description}</p>
-      
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium capitalize px-3 py-1 bg-rose-100 text-rose-600 rounded-full">
-          {activity.category}
-        </span>
-        
-        <div className="flex items-center gap-1 text-gray-500">
-          <Clock className="h-4 w-4" />
-          <span className="text-sm">{activity.duration}</span>
+const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
+    return (
+        <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-xl font-semibold mb-2">{activity.title}</h3>
+            <p className="text-gray-600 mb-4">{activity.description}</p>
+            
+            <div className="flex justify-between items-center text-sm text-gray-500">
+                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    {activity.category}
+                </span>
+                <span>{activity.duration}</span>
+            </div>
         </div>
-      </div>
-    </div>
-  );
-}
+    );
+};
+
+export default ActivityCard;

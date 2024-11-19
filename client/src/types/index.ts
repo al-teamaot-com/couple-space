@@ -1,21 +1,3 @@
-export interface Question {
-    id: number;
-    text: string;
-    category: string;
-    intensity: number;
-}
-
-export interface ComparisonResult {
-    id: number;
-    match: boolean;
-    question: {
-        text: string;
-        category: string;
-    };
-    userAnswer: string;
-    partnerAnswer: string;
-}
-
 export interface Activity {
     id: number;
     name: string;
@@ -25,8 +7,24 @@ export interface Activity {
     duration: string;
 }
 
-export interface QuestionCardProps {
+export interface ComparisonResult {
+    id: number;
+    match: boolean;
+    question: string;
+    userAnswer: string;
+    partnerAnswer: string;
+}
+
+export interface Question {
+    id: number;
+    text: string;
+    category: string;
+    intensity: number;
+}
+
+export interface QuestionFormProps {
     question: Question;
-    onAnswer: (value: number) => void;
-    selectedAnswer?: number;
+    onNext: (value: number) => void;
+    userName?: string;
+    totalQuestions: number;
 }
