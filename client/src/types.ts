@@ -16,6 +16,7 @@ export interface UserResponse {
 export interface Question {
   id: number;
   text: string;
-  category: 'fun' | 'daily' | 'spicy' | 'deep';
-  intensity: number;
+  category?: string;
 }
+
+export type QuestionCategory = string;
