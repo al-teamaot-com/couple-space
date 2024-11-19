@@ -1,20 +1,14 @@
 import React from 'react';
-import { Question, QuestionFormProps } from '@/types';
+import { QuestionFormProps } from '@/types';
 
 const QuestionForm: React.FC<QuestionFormProps> = ({ 
     question, 
     onNext,
-    userName = "User",
     totalQuestions
 }) => {
-    const handleAnswer = (value: number) => {
-        onNext(value.toString());
-    };
-
     return (
         <div className="max-w-2xl mx-auto px-4">
             <div className="mb-8 text-center">
-                <h2 className="text-2xl font-semibold">Welcome, {userName}!</h2>
                 <p className="text-gray-600">Question {question.id} of {totalQuestions}</p>
             </div>
             
@@ -24,7 +18,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                     {[1, 2, 3, 4, 5].map((value) => (
                         <button
                             key={value}
-                            onClick={() => handleAnswer(value)}
+                            onClick={() => onNext(value.toString())}
                             className="px-4 py-2 bg-blue-500 text-white rounded"
                         >
                             {value}
