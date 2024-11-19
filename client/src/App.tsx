@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from "react"
 
 const questions = [
   { id: 1, text: "How was your day?" },
@@ -6,15 +6,15 @@ const questions = [
   { id: 3, text: "Rate your stress level:" }
 ]
 
-function App() {
-  const [currentQuestion, setCurrentQuestion] = useState(0)
+export default function App() {
+  const [currentQuestion, setCurrentQuestion] = useState<number>(0)
 
-  const handleAnswer = (answer: number) => {
-    console.log(Question  answered:, answer)
+  const handleAnswer = (answer: number): void => {
+    console.log(`Question ${currentQuestion + 1} answered:`, answer)
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
     } else {
-      console.log('Quiz completed!')
+      console.log("Quiz completed!")
     }
   }
 
@@ -37,5 +37,3 @@ function App() {
     </div>
   )
 }
-
-export default App
