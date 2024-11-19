@@ -1,41 +1,29 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
-import cors from 'cors';
+import path from 'path';
 
-const prisma = new PrismaClient();
 const app = express();
-const port = process.env.PORT || 3000;
 
-app.use(cors());
+// Enable JSON parsing
 app.use(express.json());
 
-// Get all relationship questions
-app.get('/', async (req, res) => {
-  try {
-    const questions = await prisma.relationshipQuestions.findMany({
-      select: {
-        id: true,
-        content: true,
-        type: true,
-        created_at: true,
-        category_id: true
-      }
-    });
-    
-    res.json({
-      message: 'Questions retrieved successfully',
-      questionCount: questions.length,
-      questions: questions
-    });
-  } catch (error) {
-    console.error('Database query error:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch questions',
-      details: error instanceof Error ? error.message : String(error)
-    });
-  }
+// Debug logging
+console.log('Static path:', path.join(__dirname, '../../client/build'));
+
+// API routes first
+app.get('/api/questions', (req, res) => {
+  // ... your questions API logic ...
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// Serve static files from React app
+app.use(express.static(path.join(__dirname, '../../client/build')));
+
+// Handle React routing, return all requests to React app
+app.get('*', (req, res) => {
+  console.log('Serving index.html from:', path.join(__dirname, '../../client/build/index.html'));
+  res.sendFile(path.join(__dirname, '../../client/build/index.html'));
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
