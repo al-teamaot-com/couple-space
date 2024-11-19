@@ -2,12 +2,18 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-// ... your existing API routes ...
+// Enable JSON parsing
+app.use(express.json());
 
-// Serve static files from the React build
+// Define your API routes FIRST
+app.get('/api/questions', (req, res) => {
+  // ... your questions API logic ...
+});
+
+// AFTER all API routes, serve static files
 app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 
-// Handle React routing, return all requests to React app
+// This should be the LAST route
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
 });
