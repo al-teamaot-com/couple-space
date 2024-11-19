@@ -9,14 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^5.16.7",
+    "@types/pg": "^8.x.x",
+    "@types/react": "^18.x.x",
+    "lucide-react": "^0.303.0",
+    "pg": "^8.x.x",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.0.0",
-    "lucide-react": "^0.303.0",
-    "@mui/material": "^5.x.x",
-    "@types/react": "^18.x.x",
-    "@types/pg": "^8.x.x",
-    "pg": "^8.x.x"
+    "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
     "@types/react-dom": "^18.2.0",

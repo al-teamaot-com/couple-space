@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import QuestionCard from '../components/QuestionCard'
+import QuestionCard from '@/components/QuestionCard'
 import { questions } from '../data/questions'
 
 const Quiz: React.FC = () => {
