@@ -1,104 +1,63 @@
-const express = require('express');
-const { Pool } = require('pg');
-const path = require('path');
-const dotenv = require('dotenv');
+import express, { Request, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
+import cors from 'cors';
+import path from 'path';
+import { QUIZ_QUESTIONS, LIKERT_OPTIONS } from './constants';
 
-// Initialize dotenv
-dotenv.config();
-
+const prisma = new PrismaClient();
 const app = express();
+const port = process.env.PORT || 3000;
 
-// Types
-interface QuizSession {
-  id: string;
-  user1_answers: string;
-  user2_answers?: string;
-  created_at: Date;
-}
-
-// Middleware
+// 1. Essential Middleware
 app.use(express.json());
-app.use(express.static('dist'));
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://couple-space-app-20ff7d1c0153.herokuapp.com'],
+  credentials: true
+}));
 
-// Enable CORS for development
-app.use((req: any, res: any, next: any) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
-
-// Database connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-// Test database connection
-pool.query('SELECT NOW()', (err: Error | null, res: any) => {
-  if (err) {
-    console.error('Database connection error:', err);
-  } else {
-    console.log('Database connected:', res.rows[0]);
-  }
-});
-
-// Health check endpoint
-app.get('/api/health', (_req: any, res: any) => {
-  res.json({ status: 'ok' });
-});
-
-// Create quiz session
-app.post('/api/quiz-sessions', async (req: any, res: any) => {
+// 2. API Routes
+app.get('/api/quiz-questions', async (_req: Request, res: Response) => {
+  console.log('Quiz questions endpoint hit');
+  
   try {
-    const { user1_answers } = req.body;
-    if (!user1_answers) {
-      return res.status(400).json({ error: 'user1_answers is required' });
-    }
+    console.log('Attempting to fetch questions...');
+    const questions = await prisma.relationshipQuestions.findMany({
+      include: {
+        category: true
+      }
+    });
     
-    const result = await pool.query(
-      'INSERT INTO quiz_sessions (user1_answers) VALUES ($1) RETURNING id',
-      [JSON.stringify(user1_answers)]
-    );
-    console.log('Created session:', result.rows[0]);
-    res.json({ id: result.rows[0].id });
+    console.log(`Found ${questions.length} questions`);
+    
+    const response = {
+      success: true,
+      questions: questions.length ? questions : QUIZ_QUESTIONS,
+      options: LIKERT_OPTIONS
+    };
+    
+    return res.status(200).json(response);
+    
   } catch (error) {
-    console.error('Error creating quiz session:', error);
-    res.status(500).json({ error: 'Failed to create quiz session' });
+    console.error('Database error:', error);
+    return res.status(200).json({
+      success: false,
+      questions: QUIZ_QUESTIONS,
+      options: LIKERT_OPTIONS,
+      error: 'Using fallback questions'
+    });
   }
 });
 
-// Get quiz session
-app.get('/api/quiz-sessions/:id', async (req: any, res: any) => {
-  try {
-    const { id } = req.params;
-    const result = await pool.query(
-      'SELECT * FROM quiz_sessions WHERE id = $1',
-      [id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Session not found' });
-    }
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error('Error fetching quiz session:', error);
-    res.status(500).json({ error: 'Failed to get quiz session' });
-  }
-});
+// 3. Static file serving
+app.use(express.static(path.join(__dirname, '../dist')));
 
-// Catch all routes
-app.get('*', (_req: any, res: any) => {
+// 4. Catch-all route for SPA
+app.get('*', (_req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log('Static files served from:', path.join(__dirname, '../dist'));
-  console.log('Database URL:', process.env.DATABASE_URL ? 'Set' : 'Not set');
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
 
-module.exports = app;
+export default app;
