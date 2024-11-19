@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "start": "ts-node src/index.ts",
-    "postinstall": "npx prisma generate",
-    "build": "npm install && npx prisma generate"
+    "postinstall": "npx prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",

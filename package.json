@@ -6,6 +6,6 @@
         "server"
     ],
     "scripts": {
-        "postinstall": "cd server && npm install"
+        "build": "cd server && npm install"
     }
 }
