@@ -1,6 +1,6 @@
 import express from 'express';
-import cors from './middleware/cors';
-import prisma from './config/database';
+import cors from 'cors';
+import prisma from '../config/database';
 import { CreateQuestionRequest, ErrorResponse, SuccessResponse } from './types';
 
 const app = express();
