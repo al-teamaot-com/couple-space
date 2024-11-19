@@ -23,7 +23,8 @@ export interface Activity {
     duration: string;
 }
 
-export interface QuestionFormProps {
+export interface QuestionCardProps {
     question: Question;
-    onNext: (answer: string) => void;
+    onAnswer: (answer: string) => void;
+    selectedAnswer?: string;
 }

@@ -3,15 +3,17 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import QuestionCard from '../components/QuestionCard'
 import { questions } from '../data/questions'
+import QuestionForm from '../components/QuestionForm'
 
 const Quiz: React.FC = () => {
   const navigate = useNavigate();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
+  const [userName, setUserName] = useState('');
 
-  const handleAnswer = async (answerValue: number) => {
+  const handleAnswer = async (answer: string) => {
     const newAnswers = [...answers];
-    newAnswers[currentQuestionIndex] = answerValue;
+    newAnswers[currentQuestionIndex] = parseInt(answer, 10);
     setAnswers(newAnswers);
 
     if (currentQuestionIndex < questions.length - 1) {
@@ -62,10 +64,11 @@ const Quiz: React.FC = () => {
           Question {currentQuestionIndex + 1} of {questions.length}
         </div>
         
-        <QuestionCard 
+        <QuestionForm
           question={questions[currentQuestionIndex]}
-          onAnswer={handleAnswer}
-          selectedAnswer={answers[currentQuestionIndex]}
+          onNext={handleAnswer}
+          totalQuestions={questions.length}
+          userName={userName}
         />
       </div>
     </div>
