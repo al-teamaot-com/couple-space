@@ -16,10 +16,9 @@ model Categories {
 }
 
 model RelationshipQuestions {
-  id          Int        @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   content     String
-  type        String
-  created_at  DateTime   @default(now())
-  category_id Int
-  category    Categories @relation(fields: [category_id], references: [id])
+  type        String?
+  created_at  DateTime @default(now())
+  category_id Int?
 }
