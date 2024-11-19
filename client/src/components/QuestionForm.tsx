@@ -1,5 +1,5 @@
 import React from 'react';
-import { Question, QuestionFormProps } from './types';
+import { QuestionFormProps } from '../types';
 
 const QuestionForm: React.FC<QuestionFormProps> = ({ 
     question, 

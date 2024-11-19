@@ -1,6 +1,8 @@
 export interface Question {
     id: number;
     text: string;
+    category: string;
+    intensity: number;
 }
 
 export interface QuestionFormProps {
