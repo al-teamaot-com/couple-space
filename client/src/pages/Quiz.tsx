@@ -7,12 +7,33 @@ const Quiz: React.FC = () => {
     const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
     const [userName, setUserName] = useState('');
 
-    const handleAnswer = async (answer: string) => {
+    const submitAnswer = async (value: number) => {
         try {
-            await submitAnswer(parseInt(answer, 10));  // Convert string to number here
-            // ... rest of your logic
+            const response = await fetch('/api/answers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    questionId: currentQuestion?.id,
+                    answer: value
+                })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to submit answer');
+            }
         } catch (error) {
             console.error('Error submitting answer:', error);
+            throw error;
+        }
+    };
+
+    const handleAnswer = async (answer: string) => {
+        try {
+            await submitAnswer(parseInt(answer, 10));
+            // ... rest of your logic
+        } catch (error) {
+            console.error('Error handling answer:', error);
         }
     };
 
