@@ -11,9 +11,9 @@ const Quiz: React.FC = () => {
   const [answers, setAnswers] = useState<number[]>([]);
   const [userName, setUserName] = useState('');
 
-  const handleAnswer = async (answer: string) => {
+  const handleAnswer = async (value: number) => {
     const newAnswers = [...answers];
-    newAnswers[currentQuestionIndex] = parseInt(answer, 10);
+    newAnswers[currentQuestionIndex] = value;
     setAnswers(newAnswers);
 
     if (currentQuestionIndex < questions.length - 1) {

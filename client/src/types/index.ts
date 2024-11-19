@@ -7,9 +7,11 @@ export interface Question {
 
 export interface ComparisonResult {
     id: number;
-    result: string;
     match: boolean;
-    question: string;
+    question: {
+        text: string;
+        category: string;
+    };
     userAnswer: string;
     partnerAnswer: string;
 }
@@ -25,6 +27,6 @@ export interface Activity {
 
 export interface QuestionCardProps {
     question: Question;
-    onAnswer: (answer: string) => void;
-    selectedAnswer?: string;
+    onAnswer: (value: number) => void;
+    selectedAnswer?: number;
 }
