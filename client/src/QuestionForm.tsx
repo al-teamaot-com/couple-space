@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Question } from '../types';
+import { Question, Props } from '@/types';
 import QuestionCard from './QuestionCard';
 
 interface QuestionFormProps {

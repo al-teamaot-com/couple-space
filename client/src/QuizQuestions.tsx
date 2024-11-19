@@ -1,5 +1,6 @@
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { Question } from '@/types'
 
 const QuizQuestions = () => {
   const { id } = useParams()
@@ -7,7 +8,7 @@ const QuizQuestions = () => {
   const navigate = useNavigate()
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<string[]>([])
-  const [questions, setQuestions] = useState([])
+  const [questions, setQuestions] = useState<Question[]>([])
 
   useEffect(() => {
     fetch('http://localhost:3001/api/questions')

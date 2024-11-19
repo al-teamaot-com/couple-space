@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComparisonResult } from '../types';
+import { ComparisonResult } from '@/types';
 import { Check, X } from 'lucide-react';
 
 interface ComparisonViewProps {

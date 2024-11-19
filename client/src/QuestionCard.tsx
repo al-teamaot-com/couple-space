@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Question } from '../types'
+import { Question } from '@/types'
 
 interface Props {
   question: Question;

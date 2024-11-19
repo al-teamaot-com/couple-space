@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity } from '../types';
+import { Activity } from '@/types';
 import { Clock } from 'lucide-react';
 
 interface ActivityCardProps {
