@@ -2,14 +2,16 @@
     "name": "couple-space",
     "version": "0.0.0",
     "private": true,
-    "workspaces": [
-        "server"
-    ],
     "scripts": {
+        "start": "node server/index.js",
         "heroku-postbuild": "cd client && npm install && npm run build",
-        "start": "cd server && npm start"
+        "build": "cd client && vite build"
+    },
+    "engines": {
+        "node": "18.x"
     },
     "dependencies": {
-        "helmet": "^8.0.0"
+        "express": "^4.18.2",
+        "pg": "^8.11.3"
     }
 }
