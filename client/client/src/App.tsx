@@ -13,6 +13,14 @@ export default function App() {
     q.intensity <= maxIntensity
   )
 
+  const handleAnswer = (answer: number): void => {
+    if (currentQuestion < filteredQuestions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1)
+    } else {
+      setIsComplete(true)
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 p-8 flex items-center justify-center">
@@ -102,7 +110,7 @@ export default function App() {
         <div className="mb-4 flex justify-between items-center">
           <span className="text-sm text-gray-500">{question.category}</span>
           <span className="text-sm text-gray-500">
-            🌶️ Level {question.intensity}
+             Level {question.intensity}
           </span>
         </div>
         <h2 className="text-xl mb-6">{question.text}</h2>
