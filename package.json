@@ -4,8 +4,7 @@
     "private": true,
     "scripts": {
         "start": "node server/index.js",
-        "heroku-postbuild": "cd client && npm install && npm run build",
-        "build": "cd client && vite build"
+        "heroku-postbuild": "cd client && npm install && npm run build"
     },
     "engines": {
         "node": "18.x"
