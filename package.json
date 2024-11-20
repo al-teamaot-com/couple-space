@@ -8,5 +8,8 @@
     "scripts": {
         "heroku-postbuild": "cd client && npm install && npm run build",
         "start": "cd server && npm start"
+    },
+    "dependencies": {
+        "helmet": "^8.0.0"
     }
 }
