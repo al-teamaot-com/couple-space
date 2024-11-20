@@ -38,12 +38,13 @@ export default function App() {
   }
 
   if (!selectedCategory) {
+    const categories = Array.from(new Set(questions.map((q: Question) => q.category)))
     return (
       <div className="min-h-screen bg-gray-100 p-8">
         <div className="max-w-md mx-auto bg-white rounded-lg shadow p-6">
           <h2 className="text-2xl mb-6 text-center">Choose a Category</h2>
           <div className="flex flex-col gap-3">
-            {Array.from(new Set(questions.map((q: Question) => q.category))).map((category: string) => (
+            {categories.map((category: string) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
@@ -110,7 +111,7 @@ export default function App() {
         <div className="mb-4 flex justify-between items-center">
           <span className="text-sm text-gray-500">{question.category}</span>
           <span className="text-sm text-gray-500">
-            🌶️ Level {question.intensity}
+             Level {question.intensity}
           </span>
         </div>
         <h2 className="text-xl mb-6">{question.text}</h2>
