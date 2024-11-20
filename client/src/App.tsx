@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useQuestions } from "./hooks/useQuestions"
+import { useQuestions, Question } from "./hooks/useQuestions"
 
 export default function App() {
   const { questions, loading, error } = useQuestions()
@@ -8,10 +8,18 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [maxIntensity, setMaxIntensity] = useState<number>(4)
 
-  const filteredQuestions = questions.filter(q => 
+  const filteredQuestions = questions.filter((q: Question) => 
     (!selectedCategory || q.category === selectedCategory) && 
     q.intensity <= maxIntensity
   )
+
+  const handleAnswer = (answer: number): void => {
+    if (currentQuestion < filteredQuestions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1)
+    } else {
+      setIsComplete(true)
+    }
+  }
 
   if (loading) {
     return (
@@ -35,7 +43,7 @@ export default function App() {
         <div className="max-w-md mx-auto bg-white rounded-lg shadow p-6">
           <h2 className="text-2xl mb-6 text-center">Choose a Category</h2>
           <div className="flex flex-col gap-3">
-            {Array.from(new Set(questions.map(q => q.category))).map(category => (
+            {Array.from(new Set(questions.map((q: Question) => q.category))).map((category: string) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
